@@ -1,0 +1,2 @@
+//start app
+import './app';

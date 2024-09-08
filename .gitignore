@@ -3,9 +3,11 @@
 node_modules
 node_modules_v2
 /v2
+/src-v1
 
 package-v2.json
 package-lock-v2.json
+
 
 .env
 
