@@ -53,10 +53,6 @@ export class AuthenticationController {
 
     response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
 
-    request.res.setHeader('Set-Cookie', [
-      accessTokenCookie,
-      refreshTokenCookie,
-    ]);
 
     return wallet;
   }
