@@ -31,7 +31,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
-  
+  "engines": {
+    "node": "16.20.0",
+    "npm": "8.19.4"
+  },
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/bull": "^0.6.3",
