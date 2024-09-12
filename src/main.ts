@@ -19,8 +19,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .addBearerAuth({ type: 'http' }, 'access-token')
-    .setTitle('Kitana Pay')
-    .setDescription('kitana-pay-api')
+    .setTitle('Block Guard Wallet')
+    .setDescription('Block Guard Wallet')
     .setVersion('1.0')
     .build();
 
