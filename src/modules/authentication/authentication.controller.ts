@@ -8,6 +8,7 @@ import {
   Get,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
@@ -18,6 +19,7 @@ import LogInDto from '../wallets/dto/logIn.dto';
 import { WalletService } from '../wallets/wallets.service';
 import RequestWithWallet from './requestWithWallet.interface';
 import { JwtCookieService } from '../jwt-cookie-access-token/jwt-cookie.service';
+import { Response } from 'express';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -32,7 +34,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthenticationGuard)
   @Post('log-in')
   @ApiBody({ type: LogInDto })
-  async logIn(@Req() request: RequestWithWallet) {
+  async logIn(@Req() request: RequestWithWallet,@Res() response: Response) {
     console.log('req', request);
 
     const { user } = request;
@@ -49,6 +51,8 @@ export class AuthenticationController {
       wallet.walletAddress,
     );
 
+    response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+
     request.res.setHeader('Set-Cookie', [
       accessTokenCookie,
       refreshTokenCookie,
@@ -60,12 +64,11 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   @HttpCode(200)
-  async logOut(@Req() request: RequestWithWallet) {
+  async logOut(@Req() request: RequestWithWallet,@Res() response: Response) {
     await this.walletService.removeRefreshToken(request.user.walletAddress);
-    request.res.setHeader(
-      'Set-Cookie',
-      this.jwtCookieService.getCookiesForLogOut(),
-    );
+
+      response.setHeader('Set-Cookie',  this.jwtCookieService.getCookiesForLogOut(),);
+    
   }
 
   @UseGuards(JwtAuthenticationGuard)
