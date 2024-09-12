@@ -1,0 +1,7 @@
+build:
+  commands:
+    - npm install -g @nestjs/cli
+    - npm install
+    - nest build
+start:
+  command: npm run start:prod

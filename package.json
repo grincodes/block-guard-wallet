@@ -19,8 +19,8 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "node dist/main &&  npm run db:create:stg && npx sequelize-cli db:migrate",
-    "start:dev": "npm run db:create:dev && nest start --watch",
+    "start": "node dist/main ",
+    "start:dev": "nest start --watch",
     "start:stg": "cross-env NODE_ENV=staging npm run db:create:stg && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -31,12 +31,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
-
   "engines": {
-    "node": "16.20.0",   
+    "node": "16.20.0",
     "npm": "8.19.4"
   },
-
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/bull": "^0.6.3",
@@ -50,6 +48,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/typeorm": "^9.0.1",
+    "bcrypt": "^5.1.1",
     "bull": "^4.10.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -61,6 +60,7 @@
     "ioredis": "^5.3.1",
     "nestjs-typeorm-paginate": "^4.0.3",
     "niceware": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
