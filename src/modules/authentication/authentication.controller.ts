@@ -63,7 +63,7 @@ export class AuthenticationController {
   async logOut(@Req() request: RequestWithWallet,@Res() response: Response) {
     await this.walletService.removeRefreshToken(request.user.walletAddress);
 
-      response.setHeader('Set-Cookie',  this.jwtCookieService.getCookiesForLogOut(),);
+      response.setHeader('Set-Cookie',  this.jwtCookieService.getCookiesForLogOut());
     
   }
 
@@ -75,12 +75,12 @@ export class AuthenticationController {
 
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
-  refresh(@Req() request: RequestWithWallet) {
+  refresh(@Req() request: RequestWithWallet,@Res() response: Response) {
     const accessTokenCookie = this.jwtCookieService.getCookieWithJwtAccessToken(
       request.user.walletAddress,
     );
 
-    request.res.setHeader('Set-Cookie', accessTokenCookie);
+     response.setHeader('Set-Cookie', accessTokenCookie);
     return request.user;
   }
 }
