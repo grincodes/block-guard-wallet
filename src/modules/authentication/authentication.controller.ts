@@ -35,35 +35,25 @@ export class AuthenticationController {
   @Post('log-in')
   @ApiBody({ type: LogInDto })
   async logIn(@Req() request: RequestWithWallet, @Res() response: Response) {
-    try {
-      // console.log('req', request);
+    console.log('req', request);
 
-      const { user } = request;
-      const wallet = user;
+    const { user } = request;
+    const wallet = user;
 
-      const accessTokenCookie =
-        this.jwtCookieService.getCookieWithJwtAccessToken(wallet.walletAddress);
-      const { cookie: refreshTokenCookie, token: refreshToken } =
-        this.jwtCookieService.getCookieWithJwtRefreshToken(
-          wallet.walletAddress,
-        );
+    const accessTokenCookie = this.jwtCookieService.getCookieWithJwtAccessToken(
+      wallet.walletAddress,
+    );
+    const { cookie: refreshTokenCookie, token: refreshToken } =
+      this.jwtCookieService.getCookieWithJwtRefreshToken(wallet.walletAddress);
 
-      await this.walletService.setCurrentRefreshToken(
-        refreshToken,
-        wallet.walletAddress,
-      );
+    await this.walletService.setCurrentRefreshToken(
+      refreshToken,
+      wallet.walletAddress,
+    );
 
-      request.res.setHeader('Set-Cookie', [
-        accessTokenCookie,
-        refreshTokenCookie,
-      ]);
+    response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
 
-      response.send({
-        wallet,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    response.send({ wallet, accessTokenCookie, refreshTokenCookie });
   }
 
   @UseGuards(JwtAuthenticationGuard)
