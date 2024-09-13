@@ -34,37 +34,48 @@ export class AuthenticationController {
   @UseGuards(LocalAuthenticationGuard)
   @Post('log-in')
   @ApiBody({ type: LogInDto })
-  async logIn(@Req() request: RequestWithWallet,@Res() response: Response) {
-    console.log('req', request);
+  async logIn(@Req() request: RequestWithWallet, @Res() response: Response) {
+    try {
+      // console.log('req', request);
 
-    const { user } = request;
-    const wallet = user;
+      const { user } = request;
+      const wallet = user;
 
-    const accessTokenCookie = this.jwtCookieService.getCookieWithJwtAccessToken(
-      wallet.walletAddress,
-    );
-    const { cookie: refreshTokenCookie, token: refreshToken } =
-      this.jwtCookieService.getCookieWithJwtRefreshToken(wallet.walletAddress);
+      const accessTokenCookie =
+        this.jwtCookieService.getCookieWithJwtAccessToken(wallet.walletAddress);
+      const { cookie: refreshTokenCookie, token: refreshToken } =
+        this.jwtCookieService.getCookieWithJwtRefreshToken(
+          wallet.walletAddress,
+        );
 
-    await this.walletService.setCurrentRefreshToken(
-      refreshToken,
-      wallet.walletAddress,
-    );
+      await this.walletService.setCurrentRefreshToken(
+        refreshToken,
+        wallet.walletAddress,
+      );
 
-    response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+      request.res.setHeader('Set-Cookie', [
+        accessTokenCookie,
+        refreshTokenCookie,
+      ]);
 
-
-    return wallet;
+      response.send({
+        wallet,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   @HttpCode(200)
-  async logOut(@Req() request: RequestWithWallet,@Res() response: Response) {
+  async logOut(@Req() request: RequestWithWallet, @Res() response: Response) {
     await this.walletService.removeRefreshToken(request.user.walletAddress);
 
-      response.setHeader('Set-Cookie',  this.jwtCookieService.getCookiesForLogOut());
-    
+    response.setHeader(
+      'Set-Cookie',
+      this.jwtCookieService.getCookiesForLogOut(),
+    );
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -75,12 +86,12 @@ export class AuthenticationController {
 
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
-  refresh(@Req() request: RequestWithWallet,@Res() response: Response) {
+  refresh(@Req() request: RequestWithWallet, @Res() response: Response) {
     const accessTokenCookie = this.jwtCookieService.getCookieWithJwtAccessToken(
       request.user.walletAddress,
     );
 
-     response.setHeader('Set-Cookie', accessTokenCookie);
+    response.setHeader('Set-Cookie', accessTokenCookie);
     return request.user;
   }
 }
